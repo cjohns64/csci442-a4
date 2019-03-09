@@ -1,5 +1,6 @@
 import numpy as np
 import cv2 as cv
+from multiprocessing import Process
 
 
 class LineFollow:
@@ -11,16 +12,62 @@ class LineFollow:
     - y is the vertical axis and increase from top to bottom
     """
 
-    def detect_line(self):
-        # normalize image
+    def __init__(self, image_name):
+        cv.namedWindow("Editing")
+        # testing image
+        self.img = cv.imread(image_name, cv.IMREAD_COLOR)
+        # some good starting values
+        self.min_canny = 105
+        self.max_canny = 225
 
+        # set up editing track bars
+        cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
+        cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
+
+        while True:
+            ed = self.detect_line(self.img)
+            # bin_img = cv.inRange(img, np.array([250,100,150]), np.array([255,255,255]))
+
+            # img_h, img_w = self.img.shape[:2]
+            # # location of the image center in Blue
+            # cv.circle(self.img, (img_w // 2, img_h // 2), 10, (255, 0, 0), 2)
+            # vec = LineFollow.get_direction_vector(ed)
+            # # location of the COG in Green
+            # cv.circle(self.img, (int(vec[0]) + img_w // 2, int(vec[1]) + img_h // 2), 10, (0, 255, 0), 2)
+            # cv.imshow("COG", self.img)
+            cv.imshow("line detection", ed)
+
+            k = cv.waitKey(1)
+            # this is the "esc" key
+            if k == 27:
+                break
+        cv.destroyAllWindows()
+
+    def detect_line(self, image):
+        """
+        Reduces image to binary edge detection
+        :param image: image to reduce, non-destructive
+        :return: reduced image
+        """
+        edges = np.zeros(image.shape, np.uint8)
+        # normalize image
+        cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
         # edge detection
-        pass
+        edges = cv.Canny(edges, self.min_canny, self.max_canny)
+        # make lines thicker
+        edges = cv.dilate(edges, np.ones((2, 2)), iterations=1)
+        return edges
 
     def get_movement(self):
+        """
+        Gets the motor commands needed for the current camera image
+        :return:
+        """
         # detect_line
+        line_image = self.detect_line(self.img)
         
         # get direction vector
+        vec = self.get_direction_vector(line_image)
 
         # get motor commands
         pass
@@ -39,7 +86,6 @@ class LineFollow:
         # set up variables
         avg_x, avg_y = 0, 0
         number = 0
-        print(img_h, img_w)
         for y in range(len(bin_img)):
             for x in range(len(bin_img[0])):
                 # binary image so anything with a high value is taken as white
@@ -52,24 +98,22 @@ class LineFollow:
             avg_x = np.round(avg_x / number, 0)
             avg_y = np.round(avg_y / number, 0)
             # return the movement vector, positive col = move forward, positive row = turn right
-            print(number, avg_x, avg_y)
             return np.array([avg_x-img_w//2, avg_y-img_h//2])
         else:
             # image is all black, so don't move
             return np.zeros([2])
 
+    def change_slider_max_canny(self, value):
+        self.max_canny = value
 
-# # testing image
-# img = cv.imread("test.png", cv.IMREAD_COLOR)
-# bin_img = cv.inRange(img, np.array([250,100,150]), np.array([255,255,255]))
-# cv.imshow("threshold", bin_img)
-# img_h, img_w = img.shape[:2]
-# # location of the image center in Blue
-# cv.circle(img, (img_w//2, img_h//2), 10, (255,0,0), 2)
-# vec = get_direction_vector(bin_img)
-# # location of the COG in Green
-# cv.circle(img, (int(vec[0])+img_w//2, int(vec[1])+img_h//2), 10, (0,255,0), 2)
-# cv.imshow("COG", img)
+    def change_slider_min_canny(self, value):
+        self.min_canny = value
 
-cv.waitKey(0)
-cv.destroyAllWindows()
+
+if __name__ == '__main__':
+    p1 = Process(target=LineFollow, args=("images/001.png",))
+    p2 = Process(target=LineFollow, args=("images/002.png",))
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
