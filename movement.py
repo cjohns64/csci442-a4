@@ -28,13 +28,17 @@ class LineFollow:
             ed = self.detect_line(self.img)
             # bin_img = cv.inRange(img, np.array([250,100,150]), np.array([255,255,255]))
 
-            # img_h, img_w = self.img.shape[:2]
-            # # location of the image center in Blue
-            # cv.circle(self.img, (img_w // 2, img_h // 2), 10, (255, 0, 0), 2)
-            # vec = LineFollow.get_direction_vector(ed)
-            # # location of the COG in Green
-            # cv.circle(self.img, (int(vec[0]) + img_w // 2, int(vec[1]) + img_h // 2), 10, (0, 255, 0), 2)
-            # cv.imshow("COG", self.img)
+            img_h, img_w = self.img.shape[:2]
+            # location of the image center as a circle
+            cv.circle(ed, (img_w // 2, img_h // 2), 4, (255, 0, 0), 1)
+            # get the direction vector
+            vec = LineFollow.get_direction_vector(ed)
+            # location of the COG in as a box
+            rec_center = np.array((int(vec[0]) + img_w // 2, int(vec[1]) + img_h // 2))
+            cv.rectangle(ed, tuple(rec_center - 4), tuple(rec_center + 4), 255)
+            # draw line from origin to COG
+            cv.line(ed, (img_w//2, img_h//2), tuple(rec_center), 255)
+
             cv.imshow("line detection", ed)
 
             k = cv.waitKey(1)
