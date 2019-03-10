@@ -7,15 +7,31 @@ class LineFollow:
     """
     Assumptions:
     - images have index [0, 0] in the upper left
-    - a pixel can be accessed by img[x][y]
+    - a pixel can be accessed by frame[x][y]
     - x is the horizontal axis and increase from left to right
     - y is the vertical axis and increase from top to bottom
     """
 
-    def __init__(self, image_name):
+    def __init__(self, image_name=None):
+        video_use = image_name is None
+        # set video size variables to small, actual size is camera dependent
+        self.frame_x = 200
+        self.frame_y = 200
+        self.frame_name = "Video"
+        cv.namedWindow(self.frame_name)
         cv.namedWindow("Editing")
-        # testing image
-        self.img = cv.imread(image_name, cv.IMREAD_COLOR)
+
+        # start video
+        if not video_use:
+            # do testing image
+            self.frame = cv.imread(image_name)
+            cv.resize(self.frame, (self.frame_x, self.frame_y), self.frame)
+            self.frame_y, self.frame_x = self.frame.shape[:2]
+        else:
+            cap = cv.VideoCapture(0)
+            cap.set(cv.CAP_PROP_FRAME_WIDTH, self.frame_x)
+            cap.set(cv.CAP_PROP_FRAME_HEIGHT, self.frame_y)
+
         # some good starting values
         self.min_canny = 105
         self.max_canny = 225
@@ -25,24 +41,25 @@ class LineFollow:
         cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
 
         while True:
-            ed = self.detect_line(self.img)
-            # bin_img = cv.inRange(img, np.array([250,100,150]), np.array([255,255,255]))
-
-            img_h, img_w = self.img.shape[:2]
-            # location of the image center as a circle
-            cv.circle(ed, (img_w // 2, img_h // 2), 4, (255, 0, 0), 1)
+            # get video frame
+            if video_use:
+                _, self.frame = cap.read()
+                self.frame_y, self.frame_x = self.frame.shape[:2]
+            # start path detection
+            ed = self.detect_line(self.frame)
             # get the direction vector
             vec = LineFollow.get_direction_vector(ed)
             # location of the COG in as a box
-            rec_center = np.array((int(vec[0]) + img_w // 2, int(vec[1]) + img_h // 2))
+            rec_center = np.array((int(vec[0]) + self.frame_x // 2, int(vec[1]) + self.frame_y // 2))
             cv.rectangle(ed, tuple(rec_center - 4), tuple(rec_center + 4), 255)
             # draw line from origin to COG
-            cv.line(ed, (img_w//2, img_h//2), tuple(rec_center), 255)
+            cv.line(ed, (self.frame_x//2, self.frame_y//2), tuple(rec_center), 255)
 
-            cv.imshow("line detection", ed)
+            # show frame
+            cv.imshow(self.frame_name, ed)
 
+            # exit when "esc" key is pressed
             k = cv.waitKey(1)
-            # this is the "esc" key
             if k == 27:
                 break
         cv.destroyAllWindows()
@@ -54,12 +71,10 @@ class LineFollow:
         :return: reduced image
         """
         edges = np.zeros(image.shape, np.uint8)
-        # normalize image
+        # normalize image, this is for changing room lighting
         cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
         # edge detection
         edges = cv.Canny(edges, self.min_canny, self.max_canny)
-        # make lines thicker
-        edges = cv.dilate(edges, np.ones((2, 2)), iterations=1)
         return edges
 
     def get_movement(self):
@@ -68,10 +83,10 @@ class LineFollow:
         :return:
         """
         # detect_line
-        line_image = self.detect_line(self.img)
-        
+        line_image = self.detect_line(self.frame)
+
         # get direction vector
-        vec = self.get_direction_vector(line_image)
+        turn_scaler, forward_scaler = self.get_direction_vector(line_image)
 
         # get motor commands
         pass
@@ -114,10 +129,24 @@ class LineFollow:
         self.min_canny = value
 
 
-if __name__ == '__main__':
+def sample_image_testing():
+    """
+    Allows for easy controlled testing by replacing video input for 2 static images run in parallel
+    :return: None
+    """
     p1 = Process(target=LineFollow, args=("images/001.png",))
     p2 = Process(target=LineFollow, args=("images/002.png",))
     p1.start()
     p2.start()
     p1.join()
     p2.join()
+
+
+if __name__ == '__main__':
+    testing = False
+    if testing:
+        # use some sample images for testing
+        sample_image_testing()
+    else:
+        # use the video for operation
+        LineFollow()
