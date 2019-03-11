@@ -20,7 +20,7 @@ class LineFollow:
         self.frame_y = 200
         self.frame_name = "Video"
         cv.namedWindow(self.frame_name)
-        cv.namedWindow("Editing")
+        # cv.namedWindow("Editing")
 
         # some good starting values
         self.min_canny = 105
@@ -33,6 +33,7 @@ class LineFollow:
         :return:
         """
         self.frame = image
+        self.frame_y, self.frame_x = self.frame.shape[:2]
         ed = self.detect_line(self.frame)
         # get the direction vector
         vec = LineFollow.get_direction_vector(ed)
@@ -44,46 +45,6 @@ class LineFollow:
 
         # show frame
         cv.imshow(self.frame_name, ed)
-
-    def testing_loop(self):
-        # start video
-        if not self.video_use:
-            # do testing image
-            self.frame = cv.imread(self.image_name)
-            cv.resize(self.frame, (self.frame_x, self.frame_y), self.frame)
-            self.frame_y, self.frame_x = self.frame.shape[:2]
-        else:
-            cap = cv.VideoCapture(0)
-            cap.set(cv.CAP_PROP_FRAME_WIDTH, self.frame_x)
-            cap.set(cv.CAP_PROP_FRAME_HEIGHT, self.frame_y)
-
-        # set up editing track bars
-        cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
-        cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
-
-        while True:
-            # get video frame
-            if self.video_use:
-                _, self.frame = cap.read()
-                self.frame_y, self.frame_x = self.frame.shape[:2]
-            # start path detection
-            ed = self.detect_line(self.frame)
-            # get the direction vector
-            vec = LineFollow.get_direction_vector(ed)
-            # location of the COG in as a box
-            rec_center = np.array((int(vec[0]) + self.frame_x // 2, int(vec[1]) + self.frame_y // 2))
-            cv.rectangle(ed, tuple(rec_center - 4), tuple(rec_center + 4), 255)
-            # draw line from origin to COG
-            cv.line(ed, (self.frame_x//2, self.frame_y//2), tuple(rec_center), 255)
-
-            # show frame
-            cv.imshow(self.frame_name, ed)
-
-            # exit when "esc" key is pressed
-            k = cv.waitKey(1)
-            if k == 27:
-                break
-        cv.destroyAllWindows()
 
     def detect_line(self, image):
         """
@@ -107,10 +68,7 @@ class LineFollow:
         line_image = self.detect_line(self.frame)
 
         # get direction vector
-        turn_scaler, forward_scaler = self.get_direction_vector(line_image)
-
-        # get motor commands
-        pass
+        return self.get_direction_vector(line_image)
 
     @staticmethod
     def get_direction_vector(bin_img):
@@ -149,25 +107,3 @@ class LineFollow:
     def change_slider_min_canny(self, value):
         self.min_canny = value
 
-
-def sample_image_testing():
-    """
-    Allows for easy controlled testing by replacing video input for 2 static images run in parallel
-    :return: None
-    """
-    p1 = Process(target=LineFollow, args=("images/001.png",))
-    p2 = Process(target=LineFollow, args=("images/002.png",))
-    p1.start()
-    p2.start()
-    p1.join()
-    p2.join()
-
-
-if __name__ == '__main__':
-    testing = False
-    if testing:
-        # use some sample images for testing
-        sample_image_testing()
-    else:
-        # use the video for operation
-        LineFollow()

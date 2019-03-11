@@ -12,8 +12,7 @@ HEADTURN = 3
 ##    if(x == '8'):
 ##        tango.setTarget(MOTOR, 6800)
 class KeyControl():
-    def __init__(self,win):
-        self.root = win
+    def __init__(self):
         self.tango = maestro.Controller()
         self.body = 6000
         self.headTurn = 6000
@@ -97,7 +96,7 @@ class KeyControl():
             self.tango.setTarget(TURN, self.turn)
 
 win = tk.Tk()
-keys = KeyControl(win)
+keys = KeyControl()
 
 win.bind('<Up>', keys.arrow)
 win.bind('<Left>', keys.arrow)
@@ -111,4 +110,4 @@ win.bind('<s>', keys.head)
 win.bind('<a>', keys.head)
 win.bind('<d>', keys.head)
 win.mainloop()
-keys = KeyControl(win)
+keys = KeyControl()
