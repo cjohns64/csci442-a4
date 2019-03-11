@@ -2,7 +2,6 @@
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from movement import LineFollow
-from keyboardControl import KeyControl
 import time
 import cv2
 
@@ -12,8 +11,7 @@ camera.resolution = (320, 240)  # (640, 480)
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(320, 240))
 
-path_follow = LineFollow() # get movement directions from this class
-control = KeyControl()  # move the robot by faking keyboard input
+path_follow = LineFollow()  # get movement directions from this class
 
 # allow the camera to warmup
 time.sleep(0.1)
