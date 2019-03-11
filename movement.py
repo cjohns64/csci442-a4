@@ -13,7 +13,8 @@ class LineFollow:
     """
 
     def __init__(self, image_name=None):
-        video_use = image_name is None
+        self.image_name = image_name
+        self.video_use = self.image_name is None
         # set video size variables to small, actual size is camera dependent
         self.frame_x = 200
         self.frame_y = 200
@@ -21,10 +22,34 @@ class LineFollow:
         cv.namedWindow(self.frame_name)
         cv.namedWindow("Editing")
 
+        # some good starting values
+        self.min_canny = 105
+        self.max_canny = 225
+
+    def pi_cam_loop(self, image):
+        """
+        Runs 1 loop of the path detection given the current frame
+        :param image: current frame to evaluate
+        :return:
+        """
+        self.frame = image
+        ed = self.detect_line(self.frame)
+        # get the direction vector
+        vec = LineFollow.get_direction_vector(ed)
+        # location of the COG in as a box
+        rec_center = np.array((int(vec[0]) + self.frame_x // 2, int(vec[1]) + self.frame_y // 2))
+        cv.rectangle(ed, tuple(rec_center - 4), tuple(rec_center + 4), 255)
+        # draw line from origin to COG
+        cv.line(ed, (self.frame_x // 2, self.frame_y // 2), tuple(rec_center), 255)
+
+        # show frame
+        cv.imshow(self.frame_name, ed)
+
+    def testing_loop(self):
         # start video
-        if not video_use:
+        if not self.video_use:
             # do testing image
-            self.frame = cv.imread(image_name)
+            self.frame = cv.imread(self.image_name)
             cv.resize(self.frame, (self.frame_x, self.frame_y), self.frame)
             self.frame_y, self.frame_x = self.frame.shape[:2]
         else:
@@ -32,17 +57,13 @@ class LineFollow:
             cap.set(cv.CAP_PROP_FRAME_WIDTH, self.frame_x)
             cap.set(cv.CAP_PROP_FRAME_HEIGHT, self.frame_y)
 
-        # some good starting values
-        self.min_canny = 105
-        self.max_canny = 225
-
         # set up editing track bars
         cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
         cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
 
         while True:
             # get video frame
-            if video_use:
+            if self.video_use:
                 _, self.frame = cap.read()
                 self.frame_y, self.frame_x = self.frame.shape[:2]
             # start path detection

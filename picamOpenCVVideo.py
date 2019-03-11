@@ -1,6 +1,7 @@
 # import the necessary packages
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+from movement import LineFollow
 import time
 import cv2
 
@@ -9,6 +10,7 @@ camera = PiCamera()
 camera.resolution = (640, 480)
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(640, 480))
+path_follow = LineFollow()
 
 # allow the camera to warmup
 time.sleep(0.1)
@@ -18,11 +20,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # grab the raw NumPy array representing the image, then initialize the timestamp
     # and occupied/unoccupied text
     image = frame.array
-    pic = cv2.Canny(image, 100, 170)
-    # show the frame
-    cv2.imshow("Frame", pic)
-    key = cv2.waitKey(1) & 0xFF
 
+    # do one loop
+    path_follow.pi_cam_loop(image)
+
+    key = cv2.waitKey(1) & 0xFF
     # clear the stream in preparation for the next frame
     rawCapture.truncate(0)
 
