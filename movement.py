@@ -1,6 +1,6 @@
 import numpy as np
 import cv2 as cv
-from multiprocessing import Process
+import maestro
 
 
 class LineFollow:
@@ -13,6 +13,16 @@ class LineFollow:
     """
 
     def __init__(self, image_name=None):
+        self.tango = maestro.Controller()
+        # zero all motors
+        self.body = 6000
+        self.headTurn = 6000
+        self.headTilt = 6000
+        self.motors = 6000
+        self.turn = 6000
+        self.MOTORS = 1
+        self.TURN = 2
+
         self.image_name = image_name
         self.video_use = self.image_name is None
         # set video size variables to small, actual size is camera dependent
@@ -59,16 +69,18 @@ class LineFollow:
         edges = cv.Canny(edges, self.min_canny, self.max_canny)
         return edges
 
-    def get_movement(self):
+    def perform_movement(self):
         """
         Gets the motor commands needed for the current camera image
+        and tells the motors to move
         :return:
         """
         # detect_line
         line_image = self.detect_line(self.frame)
-
-        # get direction vector
-        return self.get_direction_vector(line_image)
+        # get direction
+        x_v, y_v = self.get_direction_vector(line_image)
+        # move
+        self.motor_control_from_dir(x_v, y_v)
 
     @staticmethod
     def get_direction_vector(bin_img):
@@ -100,6 +112,103 @@ class LineFollow:
         else:
             # image is all black, so don't move
             return np.zeros([2])
+
+    @staticmethod
+    def relative_speed_mod(action_value, current_level):
+        """
+        Finds if the action should increase or decrease
+        :param action_value: the value of the intent
+        :param current_level: the value of the current action
+        :return: True if the action should increase, False if it should decrease
+        """
+        if action_value > 0:
+            # increase action to more positive values
+            return action_value * 100 + 6000 > current_level
+        else:
+            # increase action to more negative values
+            return action_value * 100 + 6000 < current_level
+
+    def motor_control_from_dir(self, x_scale, y_scale):
+        """
+        - left-right directions are unknown
+
+        Generates a motor command from the COG vector
+        :param x_scale: horizontal component of the COG vector
+        :param y_scale: vertical component of the COG vector,
+            increases in the opposite direction of the forward/back motor
+        :return: None
+        """
+        left = False
+        right = False
+        forward = False
+        back = False
+        stop = True
+
+        min_div = 10  # |x_scale| or |y_scale| must be larger then this for any action to happen
+
+        if np.abs(x_scale) > np.abs(y_scale):
+            # turning wins
+            if x_scale > min_div:
+                # want to go right
+                # should we speed up or slow down
+                right = self.relative_speed_mod(x_scale, self.turn)
+                left = not right
+            elif x_scale < -min_div:
+                # want to go left
+                # should we speed up or slow down
+                left = self.relative_speed_mod(x_scale, self.turn)
+                right = not left
+            else:
+                # stop
+                pass
+        else:
+            # forward wins
+            if y_scale > min_div:
+                # want to go backwards
+                # should we speed up or slow down, positive y is backwards but motors still use positive
+                back = self.relative_speed_mod(-y_scale, self.motors)
+                forward = not back
+                pass
+            elif y_scale < -min_div:
+                # want to go forwards
+                # should we speed up or slow down, positive y is backwards but motors still use positive
+                forward = self.relative_speed_mod(-y_scale, self.motors)
+                back = not forward
+                pass
+            else:
+                # stop
+                pass
+
+        # perform the action that was determined
+        if forward:
+            self.motors += 200
+            if self.motors > 7900:
+                self.motors = 7900
+            self.tango.setTarget(self.MOTORS, self.motors)
+
+        elif back:
+            self.motors -= 200
+            if self.motors < 1510:
+                self.motors = 1510
+            self.tango.setTarget(self.MOTORS, self.motors)
+
+        elif right:
+            self.turn += 200
+            if self.turn > 7400:
+                self.turn = 7400
+            self.tango.setTarget(self.TURN, self.turn)
+
+        elif left:
+            self.turn -= 200
+            if self.turn < 2110:
+                self.turn = 2110
+            self.tango.setTarget(self.TURN, self.turn)
+
+        elif stop:
+            self.motors = 6000
+            self.turn = 6000
+            self.tango.setTarget(self.MOTORS, self.motors)
+            self.tango.setTarget(self.TURN, self.turn)
 
     def change_slider_max_canny(self, value):
         self.max_canny = value
