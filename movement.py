@@ -134,8 +134,7 @@ class LineFollow:
 
         Generates a motor command from the COG vector
         :param x_scale: horizontal component of the COG vector
-        :param y_scale: vertical component of the COG vector,
-            increases in the opposite direction of the forward/back motor
+        :param y_scale: vertical component of the COG vector
         :return: None
         """
         left = False
@@ -165,13 +164,13 @@ class LineFollow:
             # forward wins
             if y_scale > min_div:
                 # want to go backwards
-                # should we speed up or slow down, positive y is backwards but motors still use positive
+                # should we speed up or slow down
                 back = self.relative_speed_mod(-y_scale, self.motors)
                 forward = not back
                 pass
             elif y_scale < -min_div:
                 # want to go forwards
-                # should we speed up or slow down, positive y is backwards but motors still use positive
+                # should we speed up or slow down
                 forward = self.relative_speed_mod(-y_scale, self.motors)
                 back = not forward
                 pass
@@ -180,25 +179,25 @@ class LineFollow:
                 pass
 
         # perform the action that was determined
-        if forward:
+        if back:
             self.motors += 200
             if self.motors > 7900:
                 self.motors = 7900
             self.tango.setTarget(self.MOTORS, self.motors)
 
-        elif back:
+        elif forward:
             self.motors -= 200
             if self.motors < 1510:
                 self.motors = 1510
             self.tango.setTarget(self.MOTORS, self.motors)
 
-        elif right:
+        elif left:
             self.turn += 200
             if self.turn > 7400:
                 self.turn = 7400
             self.tango.setTarget(self.TURN, self.turn)
 
-        elif left:
+        elif right:
             self.turn -= 200
             if self.turn < 2110:
                 self.turn = 2110
@@ -209,6 +208,13 @@ class LineFollow:
             self.turn = 6000
             self.tango.setTarget(self.MOTORS, self.motors)
             self.tango.setTarget(self.TURN, self.turn)
+
+    def zero_motors(self):
+        self.body = 6000
+        self.headTurn = 6000
+        self.headTilt = 6000
+        self.motors = 6000
+        self.turn = 6000
 
     def change_slider_max_canny(self, value):
         self.max_canny = value
