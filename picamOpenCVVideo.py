@@ -25,9 +25,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     image = frame.array
     # get frame size
     w, h = image.shape[:2]
-    # use the center 50% of the image
-    x, y = w//5, h//5
-    image = image[y:y + 3*h//5, x:x + 3*w//5]
+    # use the lower center of the image
+    x, y = w//5, h//2
+    image = image[y:y + h//4, x:x + 3*w//5]
 
     # do one loop
     path_follow.pi_cam_loop(image)

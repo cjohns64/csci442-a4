@@ -45,7 +45,8 @@ class LineFollow:
         :param image: current frame to evaluate
         :return:
         """
-        self.frame = self.replace_part(image, np.zeros(image.shape[:2], np.uint8), (image.shape[0], 0))
+        #self.frame = self.replace_part(image, np.zeros(image.shape[:2], np.uint8), (image.shape[0], 0))
+        self.frame = image
         self.frame_y, self.frame_x = self.frame.shape[:2]
         ed = self.detect_line(self.frame)
         # get the direction vector
@@ -59,13 +60,14 @@ class LineFollow:
         # show frame
         cv.imshow(self.frame_name, ed)
 
-    def replace_part(self, img, replacement, offset_xy):
-        # h, w = replacement.shape[:2]
-        for y in range(len(replacement)):
-            for x in range(len(replacement[0])):
-                img[y + offset_xy[1]][x + offset_xy[0]] = replacement[y][x]
-
-        return img
+    # def replace_part(self, img, replacement, offset_xy):
+    #     # h, w = replacement.shape[:2]
+    #     local_img = img.__copy__()
+    #     for y in range(len(replacement)):
+    #         for x in range(len(replacement[0])):
+    #             local_img[y + offset_xy[1]][x + offset_xy[0]] = replacement[y][x]
+    #
+    #     return local_img
 
     def detect_line(self, image):
         """
@@ -79,6 +81,7 @@ class LineFollow:
         cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
         # edge detection
         edges = cv.Canny(edges, self.min_canny, self.max_canny)
+        edges = cv.dilate(edges, np.ones((2, 2)))
         return edges
 
     def perform_movement(self):
@@ -120,7 +123,7 @@ class LineFollow:
             avg_x = np.round(avg_x / number, 0)
             avg_y = np.round(avg_y / number, 0)
             # return the movement vector, positive col = move forward, positive row = turn right
-            return np.array([avg_x-img_w//2, avg_y-img_h//2])
+            return np.array([avg_x-img_w//2, avg_y-img_h])  # origin at center, bottom
         else:
             # image is all black, so don't move
             return np.zeros([2])
@@ -152,42 +155,30 @@ class LineFollow:
         left = False
         right = False
         forward = False
-        back = False
-        stop = True
 
-        min_div = 5  # |x_scale| or |y_scale| must be larger then this for any action to happen
+        min_turn_div = 5  # |x_scale| or |y_scale| must be larger then this for any action to happen
+        min_forward_div = 10
 
         if np.abs(x_scale) > np.abs(y_scale):
             # turning wins
-            if x_scale > min_div:
+            if x_scale > min_turn_div:
                 # want to go right
                 # should we speed up or slow down
                 # right = self.relative_speed_mod(x_scale, self.turn)
                 right = True
-                left = not right
-            elif x_scale < -min_div:
+            elif x_scale < -min_turn_div:
                 # want to go left
                 # should we speed up or slow down
                 # left = self.relative_speed_mod(x_scale, self.turn)
                 left = True
-                right = not left
             else:
                 # stop
                 pass
         else:
             # forward wins
-            if y_scale > min_div:
-                # want to go backwards, but go forwards anyway
-                # should we speed up or slow down
-                # back = self.relative_speed_mod(-y_scale, self.motors)
+            if np.abs(y_scale) > min_forward_div:
+                # go forward if deviation is large enough
                 forward = True
-                pass
-            elif y_scale < 0:
-                # want to go forwards
-                # should we speed up or slow down
-                # forward = self.relative_speed_mod(-y_scale, self.motors)
-                forward = True
-                pass
             else:
                 # stop
                 pass
@@ -217,7 +208,8 @@ class LineFollow:
                 self.turn = 5000
             self.tango.setTarget(self.TURN, self.turn)
 
-        elif stop:
+        else:
+            # stop
             self.motors = 6000
             self.turn = 6000
             self.tango.setTarget(self.MOTORS, self.motors)
