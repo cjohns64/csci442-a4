@@ -112,7 +112,7 @@ class LineFollow:
             avg_x = np.round(avg_x / number, 0)
             avg_y = np.round(avg_y / number, 0)
             # return the movement vector, positive col = move forward, positive row = turn right
-            return np.array([avg_x-img_w//2, avg_y-img_h//2])
+            return np.array([avg_x-img_w//2, avg_y-3*img_h//5])
         else:
             # image is all black, so don't move
             return np.zeros([2])
