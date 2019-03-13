@@ -216,8 +216,7 @@ class LineFollow:
                 self.turn = 6000
                 self.tango.setTarget(self.MOTORS, self.motors)
                 self.tango.setTarget(self.TURN, self.turn)
-            if not left or not right:
-                time.sleep(0.2)
+            time.sleep(0.2)
 
     def zero_motors(self):
         self.body = 6000
