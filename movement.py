@@ -156,8 +156,8 @@ class LineFollow:
         right = False
         forward = False
 
-        min_turn_div = 5  # |x_scale| or |y_scale| must be larger then this for any action to happen
-        min_forward_div = 10
+        min_turn_div = 0  # |x_scale| or |y_scale| must be larger then this for any action to happen
+        min_forward_div = 15
 
         if np.abs(x_scale) > np.abs(y_scale):
             # turning wins
@@ -192,8 +192,8 @@ class LineFollow:
 
         if forward:
             self.motors -= 200
-            if self.motors < 5010:
-                self.motors = 5010
+            if self.motors < 5400:
+                self.motors = 5400
             self.tango.setTarget(self.MOTORS, self.motors)
 
         elif left:
@@ -218,7 +218,7 @@ class LineFollow:
     def zero_motors(self):
         self.body = 6000
         self.headTurn = 6000
-        self.headTilt = 6000
+        # self.headTilt = 6000
         self.motors = 6000
         self.turn = 6000
 
