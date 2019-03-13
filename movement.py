@@ -187,8 +187,8 @@ class LineFollow:
 
         if forward:
             self.motors -= 200
-            if self.motors < 5410:
-                self.motors = 5410
+            if self.motors < 5210:
+                self.motors = 5210
             self.tango.setTarget(self.MOTORS, self.motors)
 
         elif left:
