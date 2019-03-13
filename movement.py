@@ -45,7 +45,7 @@ class LineFollow:
         :param image: current frame to evaluate
         :return:
         """
-        self.frame = self.replace_part(image, np.zeros(image.shape[:2], np.uint8), image.shape[0])
+        self.frame = self.replace_part(image, np.zeros(image.shape[:2], np.uint8), (image.shape[0], 0))
         self.frame_y, self.frame_x = self.frame.shape[:2]
         ed = self.detect_line(self.frame)
         # get the direction vector
