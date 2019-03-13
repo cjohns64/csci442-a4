@@ -32,7 +32,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # do one loop
     path_follow.pi_cam_loop(image)
     # move
-    # path_follow.perform_movement()
+    path_follow.perform_movement()
 
     key = cv2.waitKey(1) & 0xFF
     # clear the stream in preparation for the next frame
