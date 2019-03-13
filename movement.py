@@ -191,7 +191,7 @@ class LineFollow:
         #     #     self.motors = 7100
         #     # self.tango.setTarget(self.MOTORS, self.motors)
 
-        for i in range(4):
+        for i in range(2):
             if forward:
                 self.motors -= 200
                 if self.motors < 5400:
