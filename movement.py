@@ -154,12 +154,14 @@ class LineFollow:
             if x_scale > min_div:
                 # want to go right
                 # should we speed up or slow down
-                right = self.relative_speed_mod(x_scale, self.turn)
+                # right = self.relative_speed_mod(x_scale, self.turn)
+                right = True
                 left = not right
             elif x_scale < -min_div:
                 # want to go left
                 # should we speed up or slow down
-                left = self.relative_speed_mod(x_scale, self.turn)
+                # left = self.relative_speed_mod(x_scale, self.turn)
+                left = True
                 right = not left
             else:
                 # stop
@@ -169,13 +171,14 @@ class LineFollow:
             if y_scale > min_div:
                 # want to go backwards
                 # should we speed up or slow down
-                back = self.relative_speed_mod(-y_scale, self.motors)
-                forward = not back
+                # back = self.relative_speed_mod(-y_scale, self.motors)
+                # forward = not back
                 pass
             elif y_scale < 0:
                 # want to go forwards
                 # should we speed up or slow down
-                forward = self.relative_speed_mod(-y_scale, self.motors)
+                # forward = self.relative_speed_mod(-y_scale, self.motors)
+                forward = True
                 back = not forward
                 pass
             else:
@@ -197,14 +200,14 @@ class LineFollow:
 
         elif left:
             self.turn += 200
-            if self.turn > 6600:
-                self.turn = 6600
+            if self.turn > 6800:
+                self.turn = 6800
             self.tango.setTarget(self.TURN, self.turn)
 
         elif right:
             self.turn -= 200
-            if self.turn < 5410:
-                self.turn = 5410
+            if self.turn < 5210:
+                self.turn = 5210
             self.tango.setTarget(self.TURN, self.turn)
 
         elif stop:
