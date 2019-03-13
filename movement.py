@@ -193,14 +193,14 @@ class LineFollow:
 
         elif left:
             self.turn += 200
-            if self.turn > 6900:
-                self.turn = 6900
+            if self.turn > 6400:
+                self.turn = 6400
             self.tango.setTarget(self.TURN, self.turn)
 
         elif right:
             self.turn -= 200
-            if self.turn < 4810:
-                self.turn = 4810
+            if self.turn < 5410:
+                self.turn = 5410
             self.tango.setTarget(self.TURN, self.turn)
 
         elif stop:
