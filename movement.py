@@ -30,15 +30,14 @@ class LineFollow:
         self.frame_y = 200
         self.frame_name = "Video"
         cv.namedWindow(self.frame_name)
+        # some good starting values
+        self.min_canny = 140
+        self.max_canny = 220
         # start Editing window
         cv.namedWindow("Editing")
         # set up editing track bars
         cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
         cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
-
-        # some good starting values
-        self.min_canny = 140
-        self.max_canny = 220
 
     def pi_cam_loop(self, image):
         """
