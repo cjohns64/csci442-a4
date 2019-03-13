@@ -168,7 +168,7 @@ class LineFollow:
                 back = self.relative_speed_mod(-y_scale, self.motors)
                 forward = not back
                 pass
-            elif y_scale < -min_div:
+            elif y_scale < 0:
                 # want to go forwards
                 # should we speed up or slow down
                 forward = self.relative_speed_mod(-y_scale, self.motors)
