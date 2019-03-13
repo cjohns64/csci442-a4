@@ -191,22 +191,22 @@ class LineFollow:
         #     #     self.motors = 7100
         #     # self.tango.setTarget(self.MOTORS, self.motors)
 
-        for i in range(2):
+        for i in range(1):
             if forward:
-                self.motors -= 200
+                self.motors -= 100
                 if self.motors < 5200:
                     self.motors = 5200
                 self.tango.setTarget(self.MOTORS, self.motors)
 
             elif left:
-                self.turn += 200
+                self.turn += 100
                 if self.turn > 7000:
                     self.turn = 7000
                 self.tango.setTarget(self.TURN, self.turn)
                 time.sleep(0.1)
 
             elif right:
-                self.turn -= 200
+                self.turn -= 100
                 if self.turn < 5000:
                     self.turn = 5000
                 self.tango.setTarget(self.TURN, self.turn)
@@ -218,7 +218,7 @@ class LineFollow:
                 self.turn = 6000
                 self.tango.setTarget(self.MOTORS, self.motors)
                 self.tango.setTarget(self.TURN, self.turn)
-            time.sleep(0.2)
+            time.sleep(0.1)
 
     def zero_motors(self):
         self.body = 6000
