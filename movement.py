@@ -112,7 +112,7 @@ class LineFollow:
             avg_x = np.round(avg_x / number, 0)
             avg_y = np.round(avg_y / number, 0)
             # return the movement vector, positive col = move forward, positive row = turn right
-            return np.array([avg_x-img_w//2, avg_y-3*img_h//5])
+            return np.array([avg_x-img_w//2, avg_y-img_h//2])
         else:
             # image is all black, so don't move
             return np.zeros([2])
@@ -127,10 +127,10 @@ class LineFollow:
         """
         if action_value > 0:
             # increase action to more positive values
-            return action_value * 120 + 6000 > current_level
+            return action_value * 150 + 6000 > current_level
         else:
             # increase action to more negative values
-            return action_value * 120 + 6000 < current_level
+            return action_value * 150 + 6000 < current_level
 
     def motor_control_from_dir(self, x_scale, y_scale):
         """
@@ -149,7 +149,7 @@ class LineFollow:
 
         min_div = 5  # |x_scale| or |y_scale| must be larger then this for any action to happen
 
-        if np.abs(x_scale) > -y_scale:
+        if np.abs(x_scale) > np.abs(y_scale):
             # turning wins
             if x_scale > min_div:
                 # want to go right
@@ -169,17 +169,16 @@ class LineFollow:
         else:
             # forward wins
             if y_scale > min_div:
-                # want to go backwards
+                # want to go backwards, but go forwards anyway
                 # should we speed up or slow down
                 # back = self.relative_speed_mod(-y_scale, self.motors)
-                # forward = not back
+                forward = True
                 pass
             elif y_scale < 0:
                 # want to go forwards
                 # should we speed up or slow down
                 # forward = self.relative_speed_mod(-y_scale, self.motors)
                 forward = True
-                back = not forward
                 pass
             else:
                 # stop
@@ -194,20 +193,20 @@ class LineFollow:
 
         if forward:
             self.motors -= 200
-            if self.motors < 5210:
-                self.motors = 5210
+            if self.motors < 5010:
+                self.motors = 5010
             self.tango.setTarget(self.MOTORS, self.motors)
 
         elif left:
             self.turn += 200
-            if self.turn > 6800:
-                self.turn = 6800
+            if self.turn > 7000:
+                self.turn = 7000
             self.tango.setTarget(self.TURN, self.turn)
 
         elif right:
             self.turn -= 200
-            if self.turn < 5210:
-                self.turn = 5210
+            if self.turn < 5000:
+                self.turn = 5000
             self.tango.setTarget(self.TURN, self.turn)
 
         elif stop:
