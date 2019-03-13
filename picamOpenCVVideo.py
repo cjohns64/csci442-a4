@@ -7,7 +7,8 @@ import cv2
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
-camera.resolution = (160, 120)  # (640, 480)
+w, h = 160, 120
+camera.resolution = (w, h)  # (640, 480)
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=camera.resolution)
 
@@ -21,6 +22,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # grab the raw NumPy array representing the image, then initialize the timestamp
     # and occupied/unoccupied text
     image = frame.array
+    # get frame size
+    w, h = image.shape[:2]
+    # use the center 50% of the image
+    x, y = w//4, h//4
+    image = image[y:y + h//2, x:x + w//2]
 
     # do one loop
     path_follow.pi_cam_loop(image)

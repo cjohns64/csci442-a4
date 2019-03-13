@@ -123,10 +123,10 @@ class LineFollow:
         """
         if action_value > 0:
             # increase action to more positive values
-            return action_value * 100 + 6000 > current_level
+            return action_value * 50 + 6000 > current_level
         else:
             # increase action to more negative values
-            return action_value * 100 + 6000 < current_level
+            return action_value * 70 + 6000 < current_level
 
     def motor_control_from_dir(self, x_scale, y_scale):
         """
@@ -143,7 +143,7 @@ class LineFollow:
         back = False
         stop = True
 
-        min_div = 10  # |x_scale| or |y_scale| must be larger then this for any action to happen
+        min_div = 5  # |x_scale| or |y_scale| must be larger then this for any action to happen
 
         if np.abs(x_scale) > np.abs(y_scale):
             # turning wins
