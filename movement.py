@@ -34,7 +34,7 @@ class LineFollow:
 
         # some good starting values
         self.min_canny = 105
-        self.max_canny = 225
+        self.max_canny = 170
 
     def pi_cam_loop(self, image):
         """
