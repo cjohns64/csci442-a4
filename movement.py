@@ -145,7 +145,7 @@ class LineFollow:
 
         min_div = 5  # |x_scale| or |y_scale| must be larger then this for any action to happen
 
-        if np.abs(x_scale) > np.abs(y_scale):
+        if np.abs(x_scale) > y_scale:
             # turning wins
             if x_scale > min_div:
                 # want to go right
