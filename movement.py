@@ -184,14 +184,7 @@ class LineFollow:
                 # stop
                 pass
 
-        # perform the action that was determined
-        # if back:
-        #     # self.motors += 200
-        #     # if self.motors > 7100:
-        #     #     self.motors = 7100
-        #     # self.tango.setTarget(self.MOTORS, self.motors)
-
-        burst = 5
+        burst = 7
         for i in range(burst):
             if i == burst-1:
                 left = False
@@ -205,8 +198,8 @@ class LineFollow:
 
             elif left:
                 self.turn += 200
-                if self.turn > 6610:
-                    self.turn = 6600
+                if self.turn > 7010:
+                    self.turn = 7000
                 self.tango.setTarget(self.TURN, self.turn)
 
             elif right:
