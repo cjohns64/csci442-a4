@@ -30,7 +30,11 @@ class LineFollow:
         self.frame_y = 200
         self.frame_name = "Video"
         cv.namedWindow(self.frame_name)
-        # cv.namedWindow("Editing")
+        # start Editing window
+        cv.namedWindow("Editing")
+        # set up editing track bars
+        cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
+        cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
 
         # some good starting values
         self.min_canny = 140
@@ -63,6 +67,7 @@ class LineFollow:
         :return: reduced image
         """
         edges = np.zeros(image.shape, np.uint8)
+        edges = cv.GaussianBlur(edges, (9, 9), cv.BORDER_DEFAULT)
         # normalize image, this is for changing room lighting
         cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
         # edge detection
