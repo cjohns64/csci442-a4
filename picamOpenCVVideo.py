@@ -34,7 +34,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # move
     path_follow.perform_movement()
     # path_follow.zero_motors()
-    time.sleep(0.2)
 
     key = cv2.waitKey(1) & 0xFF
     # clear the stream in preparation for the next frame

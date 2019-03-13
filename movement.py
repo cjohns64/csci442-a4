@@ -191,7 +191,7 @@ class LineFollow:
         #     #     self.motors = 7100
         #     # self.tango.setTarget(self.MOTORS, self.motors)
 
-        burst = 7
+        burst = 4
         for i in range(burst):
             if i == burst-1 or (i > burst/2 and (left or right)):
                 left = False
@@ -202,6 +202,7 @@ class LineFollow:
                 if self.motors < 5200:
                     self.motors = 5200
                 self.tango.setTarget(self.MOTORS, self.motors)
+                time.sleep(0.1)
 
             elif left:
                 self.turn += 200
@@ -221,6 +222,7 @@ class LineFollow:
                 self.turn = 6000
                 self.tango.setTarget(self.MOTORS, self.motors)
                 self.tango.setTarget(self.TURN, self.turn)
+            time.sleep(0.1)
 
     def zero_motors(self):
         self.body = 6000
