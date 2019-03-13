@@ -33,8 +33,8 @@ class LineFollow:
         # cv.namedWindow("Editing")
 
         # some good starting values
-        self.min_canny = 105
-        self.max_canny = 170
+        self.min_canny = 130
+        self.max_canny = 200
 
     def pi_cam_loop(self, image):
         """
@@ -179,13 +179,13 @@ class LineFollow:
                 pass
 
         # perform the action that was determined
-        if back:
-            self.motors += 200
-            if self.motors > 7100:
-                self.motors = 7100
-            self.tango.setTarget(self.MOTORS, self.motors)
+        # if back:
+        #     # self.motors += 200
+        #     # if self.motors > 7100:
+        #     #     self.motors = 7100
+        #     # self.tango.setTarget(self.MOTORS, self.motors)
 
-        elif forward:
+        if forward:
             self.motors -= 200
             if self.motors < 4810:
                 self.motors = 4810
