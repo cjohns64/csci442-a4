@@ -123,10 +123,10 @@ class LineFollow:
         """
         if action_value > 0:
             # increase action to more positive values
-            return action_value * 50 + 6000 > current_level
+            return action_value * 120 + 6000 > current_level
         else:
             # increase action to more negative values
-            return action_value * 70 + 6000 < current_level
+            return action_value * 120 + 6000 < current_level
 
     def motor_control_from_dir(self, x_scale, y_scale):
         """
@@ -193,8 +193,8 @@ class LineFollow:
 
         elif left:
             self.turn += 200
-            if self.turn > 6400:
-                self.turn = 6400
+            if self.turn > 6600:
+                self.turn = 6600
             self.tango.setTarget(self.TURN, self.turn)
 
         elif right:
