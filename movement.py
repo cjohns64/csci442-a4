@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 as cv
 import maestro
+import time
 
 
 class LineFollow:
@@ -190,30 +191,33 @@ class LineFollow:
         #     #     self.motors = 7100
         #     # self.tango.setTarget(self.MOTORS, self.motors)
 
-        if forward:
-            self.motors -= 200
-            if self.motors < 5400:
-                self.motors = 5400
-            self.tango.setTarget(self.MOTORS, self.motors)
+        for i in range(4):
+            if forward:
+                self.motors -= 200
+                if self.motors < 5400:
+                    self.motors = 5400
+                self.tango.setTarget(self.MOTORS, self.motors)
 
-        elif left:
-            self.turn += 200
-            if self.turn > 7000:
-                self.turn = 7000
-            self.tango.setTarget(self.TURN, self.turn)
+            elif left:
+                self.turn += 200
+                if self.turn > 7000:
+                    self.turn = 7000
+                self.tango.setTarget(self.TURN, self.turn)
 
-        elif right:
-            self.turn -= 200
-            if self.turn < 5000:
-                self.turn = 5000
-            self.tango.setTarget(self.TURN, self.turn)
+            elif right:
+                self.turn -= 200
+                if self.turn < 5000:
+                    self.turn = 5000
+                self.tango.setTarget(self.TURN, self.turn)
 
-        else:
-            # stop
-            self.motors = 6000
-            self.turn = 6000
-            self.tango.setTarget(self.MOTORS, self.motors)
-            self.tango.setTarget(self.TURN, self.turn)
+            else:
+                # stop
+                self.motors = 6000
+                self.turn = 6000
+                self.tango.setTarget(self.MOTORS, self.motors)
+                self.tango.setTarget(self.TURN, self.turn)
+            if not left or not right:
+                time.sleep(0.2)
 
     def zero_motors(self):
         self.body = 6000

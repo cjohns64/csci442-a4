@@ -31,12 +31,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # do one loop
     path_follow.pi_cam_loop(image)
-    time.sleep(0.3)
     # move
     path_follow.perform_movement()
-    path_follow.perform_movement()
-    path_follow.perform_movement()
-    time.sleep(0.1)
     path_follow.zero_motors()
 
     key = cv2.waitKey(1) & 0xFF
