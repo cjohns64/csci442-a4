@@ -194,8 +194,8 @@ class LineFollow:
         for i in range(2):
             if forward:
                 self.motors -= 200
-                if self.motors < 5400:
-                    self.motors = 5400
+                if self.motors < 5200:
+                    self.motors = 5200
                 self.tango.setTarget(self.MOTORS, self.motors)
 
             elif left:
@@ -203,12 +203,14 @@ class LineFollow:
                 if self.turn > 7000:
                     self.turn = 7000
                 self.tango.setTarget(self.TURN, self.turn)
+                time.sleep(0.1)
 
             elif right:
                 self.turn -= 200
                 if self.turn < 5000:
                     self.turn = 5000
                 self.tango.setTarget(self.TURN, self.turn)
+                time.sleep(0.1)
 
             else:
                 # stop
