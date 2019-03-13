@@ -181,26 +181,26 @@ class LineFollow:
         # perform the action that was determined
         if back:
             self.motors += 200
-            if self.motors > 7900:
-                self.motors = 7900
+            if self.motors > 7100:
+                self.motors = 7100
             self.tango.setTarget(self.MOTORS, self.motors)
 
         elif forward:
             self.motors -= 200
-            if self.motors < 1510:
-                self.motors = 1510
+            if self.motors < 4810:
+                self.motors = 4810
             self.tango.setTarget(self.MOTORS, self.motors)
 
         elif left:
             self.turn += 200
-            if self.turn > 7400:
-                self.turn = 7400
+            if self.turn > 6900:
+                self.turn = 6900
             self.tango.setTarget(self.TURN, self.turn)
 
         elif right:
             self.turn -= 200
-            if self.turn < 2110:
-                self.turn = 2110
+            if self.turn < 4810:
+                self.turn = 4810
             self.tango.setTarget(self.TURN, self.turn)
 
         elif stop:
