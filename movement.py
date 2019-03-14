@@ -120,7 +120,7 @@ class LineFollow:
                     number += 1
         # check that the image is not all black
         if number > 0:
-            if number >= img_h * img_w // 6:
+            if number <= img_h * img_w // 50:
                 # we probably ran off the path since >25% of the screen is white
                 self.end = True
             avg_x = np.round(avg_x / number, 0)
