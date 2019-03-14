@@ -23,6 +23,7 @@ class LineFollow:
         self.turn = 6000
         self.MOTORS = 1
         self.TURN = 2
+        self.end = False
 
         self.image_name = image_name
         self.video_use = self.image_name is None
@@ -46,12 +47,11 @@ class LineFollow:
         :param image: current frame to evaluate
         :return:
         """
-        #self.frame = self.replace_part(image, np.zeros(image.shape[:2], np.uint8), (image.shape[0], 0))
         self.frame = image
         self.frame_y, self.frame_x = self.frame.shape[:2]
         ed = self.detect_line(self.frame)
         # get the direction vector
-        vec = LineFollow.get_direction_vector(ed)
+        vec = self.get_direction_vector(ed)
         # location of the COG in as a box
         rec_center = np.array((int(vec[0]) + self.frame_x // 2, int(vec[1]) + self.frame_y // 2))
         cv.rectangle(ed, tuple(rec_center - 4), tuple(rec_center + 4), 255)
@@ -98,8 +98,7 @@ class LineFollow:
         # move
         self.motor_control_from_dir(x_v, y_v)
 
-    @staticmethod
-    def get_direction_vector(bin_img):
+    def get_direction_vector(self, bin_img):
         """
         Finds the vector from the center of the image to the Center of Gravity of the given
         Binary image, the COG is found by averaging the locations of all the white pixels in the image
@@ -121,6 +120,9 @@ class LineFollow:
                     number += 1
         # check that the image is not all black
         if number > 0:
+            if number >= img_h * img_w // 4:
+                # we probably ran off the path since >25% of the screen is white
+                self.end = True
             avg_x = np.round(avg_x / number, 0)
             avg_y = np.round(avg_y / number, 0)
             # return the movement vector, positive col = move forward, positive row = turn right
