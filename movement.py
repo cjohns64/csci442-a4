@@ -37,11 +37,6 @@ class LineFollow:
         # some good starting values
         self.min_canny = 247
         self.max_canny = 255
-        # # start Editing window
-        cv.namedWindow("Editing")
-        # # set up editing track bars
-        cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
-        cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
 
     def pi_cam_loop(self, image):
         """
@@ -62,15 +57,6 @@ class LineFollow:
 
         # show frame
         cv.imshow(self.frame_name, ed)
-
-    # def replace_part(self, img, replacement, offset_xy):
-    #     # h, w = replacement.shape[:2]
-    #     local_img = img.__copy__()
-    #     for y in range(len(replacement)):
-    #         for x in range(len(replacement[0])):
-    #             local_img[y + offset_xy[1]][x + offset_xy[0]] = replacement[y][x]
-    #
-    #     return local_img
 
     def detect_line(self, image):
         """
@@ -169,13 +155,9 @@ class LineFollow:
             # turning wins
             if x_scale > min_turn_div:
                 # want to go right
-                # should we speed up or slow down
-                # right = self.relative_speed_mod(x_scale, self.turn)
                 right = True
             elif x_scale < -min_turn_div:
                 # want to go left
-                # should we speed up or slow down
-                # left = self.relative_speed_mod(x_scale, self.turn)
                 left = True
             else:
                 # stop
