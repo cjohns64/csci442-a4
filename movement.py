@@ -25,6 +25,7 @@ class LineFollow:
         self.TURN = 2
         self.end = False
         self.end_count = 0
+        self.tango.setTarget(4, 4000)
 
         self.image_name = image_name
         self.video_use = self.image_name is None
