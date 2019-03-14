@@ -190,9 +190,9 @@ class LineFollow:
                 pass
 
         if not self.end_count > 6:
-            burst = 9
+            burst = 8
             for i in range(burst):
-                if i == burst-1 or (i >= burst - 2 and (right or left)):
+                if i == burst-1 or (i >= burst - 1 and (right or left)):
                     left = False
                     right = False
                     forward = False
