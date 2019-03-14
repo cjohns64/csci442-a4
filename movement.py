@@ -32,8 +32,8 @@ class LineFollow:
         self.frame_name = "Video"
         cv.namedWindow(self.frame_name)
         # some good starting values
-        self.min_canny = 105
-        self.max_canny = 240
+        self.min_canny = 247
+        self.max_canny = 255
         # # start Editing window
         cv.namedWindow("Editing")
         # # set up editing track bars
@@ -79,7 +79,7 @@ class LineFollow:
         edges = np.zeros(image.shape, np.uint8)
         edges = cv.GaussianBlur(edges, (9, 9), cv.BORDER_DEFAULT)
         # normalize image, this is for changing room lighting
-        # cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
+        cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
         # edge detection
         edges = cv.Canny(edges, self.min_canny, self.max_canny)
         edges = cv.dilate(edges, np.ones((2, 2)))
