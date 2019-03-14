@@ -35,7 +35,7 @@ class LineFollow:
         self.min_canny = 247
         self.max_canny = 255
         # # start Editing window
-        # cv.namedWindow("Editing")
+        cv.namedWindow("Editing")
         # # set up editing track bars
         cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
         cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
