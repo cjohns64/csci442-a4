@@ -120,7 +120,7 @@ class LineFollow:
                     number += 1
         # check that the image is not all black
         if number > 0:
-            if number >= img_h * img_w // 4:
+            if number >= img_h * img_w // 6:
                 # we probably ran off the path since >25% of the screen is white
                 self.end = True
             avg_x = np.round(avg_x / number, 0)
@@ -186,16 +186,16 @@ class LineFollow:
                 # stop
                 pass
 
-        burst = 7
+        burst = 8
         for i in range(burst):
-            if i == burst-1:
+            if i == burst-1 or (i >= burst - 3 and (right or left)):
                 left = False
                 right = False
                 forward = False
             if forward:
                 self.motors -= 200
-                if self.motors < 2500:
-                    self.motors = 2600
+                if self.motors < 2300:
+                    self.motors = 2400
                 self.tango.setTarget(self.MOTORS, self.motors)
 
             elif left:
