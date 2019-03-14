@@ -37,8 +37,8 @@ class LineFollow:
         # # start Editing window
         # cv.namedWindow("Editing")
         # # set up editing track bars
-        # cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
-        # cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
+        cv.createTrackbar("max Canny", "Editing", self.max_canny, 255, self.change_slider_max_canny)
+        cv.createTrackbar("min Canny", "Editing", self.min_canny, 255, self.change_slider_min_canny)
 
     def pi_cam_loop(self, image):
         """
@@ -79,7 +79,7 @@ class LineFollow:
         edges = np.zeros(image.shape, np.uint8)
         edges = cv.GaussianBlur(edges, (9, 9), cv.BORDER_DEFAULT)
         # normalize image, this is for changing room lighting
-        cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
+        # cv.normalize(image, edges, 0, 255, cv.NORM_MINMAX)
         # edge detection
         edges = cv.Canny(edges, self.min_canny, self.max_canny)
         edges = cv.dilate(edges, np.ones((2, 2)))
