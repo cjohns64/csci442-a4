@@ -122,7 +122,7 @@ class LineFollow:
                     number += 1
         # check that the image is not all black
         if number > 0:
-            if number <= img_h * img_w // 35:
+            if number <= img_h * img_w // 80:
                 # we probably ran off the path since >25% of the screen is white
                 self.end_count += 1
             avg_x = np.round(avg_x / number, 0)
@@ -188,7 +188,7 @@ class LineFollow:
                 # stop
                 pass
 
-        if not self.end_count > 5:
+        if not self.end_count > 6:
             burst = 9
             for i in range(burst):
                 if i == burst-1 or (i >= burst - 2 and (right or left)):
