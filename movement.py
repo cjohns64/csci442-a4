@@ -186,7 +186,7 @@ class LineFollow:
                 # stop
                 pass
 
-        burst = 8
+        burst = 10
         for i in range(burst):
             if i == burst-1 or (i >= burst - 3 and (right or left)):
                 left = False
