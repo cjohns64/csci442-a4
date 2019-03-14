@@ -111,6 +111,7 @@ class LineFollow:
         # set up variables
         avg_x, avg_y = 0, 0
         number = 0
+        time.sleep(0.1)
         for y in range(len(bin_img)):
             for x in range(len(bin_img[0])):
                 # binary image so anything with a high value is taken as white
@@ -120,7 +121,7 @@ class LineFollow:
                     number += 1
         # check that the image is not all black
         if number > 0:
-            if number <= img_h * img_w // 100:
+            if number <= img_h * img_w // 35:
                 # we probably ran off the path since >25% of the screen is white
                 self.end = True
             avg_x = np.round(avg_x / number, 0)
