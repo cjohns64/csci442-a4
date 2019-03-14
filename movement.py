@@ -186,37 +186,38 @@ class LineFollow:
                 # stop
                 pass
 
-        burst = 9
-        for i in range(burst):
-            if i == burst-1 or (i >= burst - 2 and (right or left)):
-                left = False
-                right = False
-                forward = False
-            if forward:
-                self.motors -= 200
-                if self.motors < 2500:
-                    self.motors = 2600
-                self.tango.setTarget(self.MOTORS, self.motors)
+        if not self.end:
+            burst = 9
+            for i in range(burst):
+                if i == burst-1 or (i >= burst - 2 and (right or left)):
+                    left = False
+                    right = False
+                    forward = False
+                if forward:
+                    self.motors -= 200
+                    if self.motors < 2500:
+                        self.motors = 2600
+                    self.tango.setTarget(self.MOTORS, self.motors)
 
-            elif left:
-                self.turn += 200
-                if self.turn > 7010:
-                    self.turn = 7000
-                self.tango.setTarget(self.TURN, self.turn)
+                elif left:
+                    self.turn += 200
+                    if self.turn > 7010:
+                        self.turn = 7000
+                    self.tango.setTarget(self.TURN, self.turn)
 
-            elif right:
-                self.turn -= 200
-                if self.turn < 3390:
-                    self.turn = 3400
-                self.tango.setTarget(self.TURN, self.turn)
+                elif right:
+                    self.turn -= 200
+                    if self.turn < 3390:
+                        self.turn = 3400
+                    self.tango.setTarget(self.TURN, self.turn)
 
-            else:
-                # stop
-                self.motors = 6000
-                self.turn = 6000
-                self.tango.setTarget(self.MOTORS, self.motors)
-                self.tango.setTarget(self.TURN, self.turn)
-            time.sleep(0.1)
+                else:
+                    # stop
+                    self.motors = 6000
+                    self.turn = 6000
+                    self.tango.setTarget(self.MOTORS, self.motors)
+                    self.tango.setTarget(self.TURN, self.turn)
+                time.sleep(0.1)
 
     def zero_motors(self):
         self.body = 6000

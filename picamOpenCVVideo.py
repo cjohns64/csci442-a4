@@ -40,6 +40,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     rawCapture.truncate(0)
 
     # if the `q` key was pressed, break from the loop
-    if key == ord("q"):
+    if key == ord("q") or path_follow.end:
         path_follow.zero_motors()
         break
