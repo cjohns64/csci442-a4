@@ -24,6 +24,7 @@ class LineFollow:
         self.MOTORS = 1
         self.TURN = 2
         self.end = False
+        self.end_count = 0
 
         self.image_name = image_name
         self.video_use = self.image_name is None
@@ -123,7 +124,7 @@ class LineFollow:
         if number > 0:
             if number <= img_h * img_w // 35:
                 # we probably ran off the path since >25% of the screen is white
-                self.end = True
+                self.end_count += 1
             avg_x = np.round(avg_x / number, 0)
             avg_y = np.round(avg_y / number, 0)
             # return the movement vector, positive col = move forward, positive row = turn right
@@ -187,7 +188,7 @@ class LineFollow:
                 # stop
                 pass
 
-        if not self.end:
+        if not self.end_count > 5:
             burst = 9
             for i in range(burst):
                 if i == burst-1 or (i >= burst - 2 and (right or left)):
@@ -219,6 +220,8 @@ class LineFollow:
                     self.tango.setTarget(self.MOTORS, self.motors)
                     self.tango.setTarget(self.TURN, self.turn)
                 time.sleep(0.1)
+        else:
+            self.end = True
 
     def zero_motors(self):
         self.body = 6000
