@@ -26,6 +26,7 @@ class KeyControl():
         self.tango.setTarget(HEADTILT, self.headTilt)
         self.tango.setTarget(HEADTURN, self.headTurn)
         self.tango.setTarget(BODY, self.body)
+        self.tango.setTarget(ELBOW, self.elbow)
         
     def head(self,key):
         print(key.keycode)
