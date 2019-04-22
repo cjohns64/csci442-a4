@@ -6,6 +6,7 @@ TURN = 2
 BODY = 0
 HEADTILT = 4
 HEADTURN = 3
+ELBOW = 8
 
 
 ##def sendCommand(x):
@@ -19,6 +20,12 @@ class KeyControl():
         self.headTilt = 6000
         self.motors = 6000
         self.turn = 6000
+        self.elbow = 6000
+        self.tango.setTarget(TURN, self.turn)
+        self.tango.setTarget(MOTORS, self.motors)
+        self.tango.setTarget(HEADTILT, self.headTilt)
+        self.tango.setTarget(HEADTURN, self.headTurn)
+        self.tango.setTarget(BODY, self.body)
         
     def head(self,key):
         print(key.keycode)
@@ -61,7 +68,9 @@ class KeyControl():
             self.tango.setTarget(BODY, self.body)
             print ('waist left')
    
-    
+    def elbow(self, key):
+        print(key.keycode)
+
     def arrow(self, key):
         print(key.keycode)
         if key.keycode == 116:
@@ -109,5 +118,6 @@ win.bind('<w>', keys.head)
 win.bind('<s>', keys.head)
 win.bind('<a>', keys.head)
 win.bind('<d>', keys.head)
+win.bind('<l>', keys.elbow)
 win.mainloop()
 keys = KeyControl()

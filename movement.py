@@ -3,8 +3,9 @@ import cv2 as cv
 import maestro
 import time
 
+face_cascade = cv.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-class LineFollow:
+class FaceFollow:
     """
     Assumptions:
     - images have index [0, 0] in the upper left
@@ -64,6 +65,7 @@ class LineFollow:
         :param image: image to reduce, non-destructive
         :return: reduced image
         """
+
         edges = np.zeros(image.shape, np.uint8)
         edges = cv.GaussianBlur(edges, (9, 9), cv.BORDER_DEFAULT)
         # normalize image, this is for changing room lighting
