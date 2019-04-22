@@ -54,7 +54,7 @@ class KeyControl():
 
     def waist(self, key):
         print(key.keycode)
-        
+        self.tango.getPosition(ELBOW)
         if key.keycode == 54:
             self.body += 200
             if(self.body > 7900):
@@ -67,6 +67,8 @@ class KeyControl():
                 self.body = 1510
             self.tango.setTarget(BODY, self.body)
             print ('waist left')
+        #elif key.keycode == 53:
+        #    self.elbow+=
    
 #    def elbow(self, key):
 #        print(key.keycode)
