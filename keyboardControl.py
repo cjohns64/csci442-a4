@@ -68,8 +68,8 @@ class KeyControl():
             self.tango.setTarget(BODY, self.body)
             print ('waist left')
    
-    def elbow(self, key):
-        print(key.keycode)
+#    def elbow(self, key):
+#        print(key.keycode)
 
     def arrow(self, key):
         print(key.keycode)
@@ -118,6 +118,6 @@ win.bind('<w>', keys.head)
 win.bind('<s>', keys.head)
 win.bind('<a>', keys.head)
 win.bind('<d>', keys.head)
-win.bind('<x>', keys.elbow)
+win.bind('<x>', keys.waist)
 win.mainloop()
 keys = KeyControl()
