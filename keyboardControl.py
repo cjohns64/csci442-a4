@@ -77,8 +77,9 @@ class KeyControl():
         elif key.keycode == 53:
             #self.elbow+=200
             self.shoulder+=200
-            print(self.shoulder)
+            #print(self.shoulder)
             self.hand +=200
+            print(self.hand)
             self.tango.setTarget(HAND, self.hand)
             self.tango.setTarget(SHOULDER, self.shoulder)
    
