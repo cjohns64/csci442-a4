@@ -24,6 +24,7 @@ class KeyControl():
         self.turn = 6000
         self.elbow = 6000
         self.shoulder = 6000
+        self.hand = 6000
         self.tango.setTarget(TURN, self.turn)
         self.tango.setTarget(MOTORS, self.motors)
         self.tango.setTarget(HEADTILT, self.headTilt)
@@ -31,7 +32,7 @@ class KeyControl():
         self.tango.setTarget(BODY, self.body)
         self.tango.setTarget(ELBOW, self.elbow)
         self.tango.setTarget(SHOULDER, self.shoulder)
-        self.tango.setTarget(7, 6000)
+        self.tango.setTarget(HAND, self.hand)
         
     def head(self,key):
         print(key.keycode)
@@ -74,9 +75,11 @@ class KeyControl():
             self.tango.setTarget(BODY, self.body)
             print ('waist left')
         elif key.keycode == 53:
-            self.elbow+=200
+            #self.elbow+=200
             self.shoulder+=200
-            self.tango.setTarget(ELBOW, self.elbow)
+            print(self.shoulder)
+            self.hand +=200
+            self.tango.setTarget(HAND, self.hand)
             self.tango.setTarget(SHOULDER, self.shoulder)
    
 #    def elbow(self, key):
