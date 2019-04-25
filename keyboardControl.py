@@ -7,7 +7,7 @@ BODY = 0
 HEADTILT = 4
 HEADTURN = 3
 ELBOW = 9
-SHOULDER = 7
+SHOULDER = 6
 HAND = 11
 
 
@@ -23,7 +23,7 @@ class KeyControl():
         self.motors = 6000
         self.turn = 6000
         self.elbow = 6000
-        self.shoulder = 6000
+        self.shoulder = 7000
         self.hand = 4800
         self.tango.setTarget(TURN, self.turn)
         self.tango.setTarget(MOTORS, self.motors)
@@ -78,9 +78,9 @@ class KeyControl():
             #self.elbow+=200
             self.shoulder+=200
             #print(self.shoulder)
-            self.hand +=200
+            #self.hand +=200
             print(self.hand)
-            self.tango.setTarget(HAND, self.hand)
+            #self.tango.setTarget(HAND, self.hand)
             self.tango.setTarget(SHOULDER, self.shoulder)
    
 #    def elbow(self, key):
