@@ -25,7 +25,7 @@ class KeyControl():
         self.turn = 6000
         self.elbow = 6000
         self.shoulder = 7000
-        self.shoulder_side = 6000
+        self.shoulder_side = 7000
         self.hand = 4800
         self.tango.setTarget(TURN, self.turn)
         self.tango.setTarget(MOTORS, self.motors)
@@ -78,7 +78,7 @@ class KeyControl():
             print ('waist left')
         elif key.keycode == 53:
             #self.elbow+=200
-            self.shoulder_side+=200
+            self.shoulder_side-=200
             #print(self.shoulder)
             #self.hand +=200
             #print(self.hand)
