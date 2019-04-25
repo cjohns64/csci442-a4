@@ -7,7 +7,7 @@ BODY = 0
 HEADTILT = 4
 HEADTURN = 3
 ELBOW = 9
-SHOULDER = 5
+SHOULDER = 7
 HAND = 11
 
 
@@ -41,7 +41,7 @@ class KeyControl():
             if(self.headTurn > 7900):
                 self.headTurn = 7900
             self.tango.setTarget(HEADTURN, self.headTurn)
-        elif key.keycode == 52:
+        elif key.keycode == 40:
             self.headTurn -= 200
             if(self.headTurn < 1510):
                 self.headTurn = 1510
