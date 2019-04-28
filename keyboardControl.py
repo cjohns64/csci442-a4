@@ -79,6 +79,7 @@ class KeyControl():
         elif key.keycode == 53:
             #self.elbow+=200
             self.shoulder_side-=200
+            print(self.shoulder_side)
             #print(self.shoulder)
             #self.hand +=200
             #print(self.hand)
