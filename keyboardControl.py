@@ -24,7 +24,7 @@ class KeyControl():
         self.motors = 6000
         self.turn = 6000
         self.elbow = 5000
-        self.shoulder = 8400
+        self.shoulder = 6000
         self.shoulder_side = 7000
         self.hand = 4800
         self.tango.setTarget(TURN, self.turn)
