@@ -77,9 +77,10 @@ class KeyControl():
             self.tango.setTarget(BODY, self.body)
             print ('waist left')
         elif key.keycode == 53:
-            self.elbow+=200
+            #self.elbow+=200
             #self.shoulder_side-=200
             #print(self.elbow)
+            self.shoulder+=200
             print(self.shoulder)
             #self.hand +=200
             #print(self.hand)
