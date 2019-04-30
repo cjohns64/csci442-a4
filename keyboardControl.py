@@ -34,6 +34,7 @@ class KeyControl():
         self.tango.setTarget(BODY, self.body)
         self.tango.setTarget(ELBOW, self.elbow)
         self.tango.setTarget(SHOULDER, self.shoulder)
+        self.tango.setTarget(SHOULDER_SIDE, self.shoulder_side)
         self.tango.setTarget(HAND, self.hand)
         
     def head(self,key):
@@ -80,14 +81,14 @@ class KeyControl():
             #self.elbow+=200
             #self.shoulder_side-=200
             #print(self.elbow)
-            self.shoulder+=200
-            print(self.shoulder)
-            #self.hand +=200
-            #print(self.hand)
-            #self.tango.setTarget(HAND, self.hand)
+            #self.shoulder+=200
+            #print(self.shoulder)
+            self.hand +=200
+            print(self.hand)
+            self.tango.setTarget(HAND, self.hand)
             #self.tango.setTarget(SHOULDER_SIDE, self.shoulder_side)
             #self.tango.setTarget(ELBOW, self.elbow)
-            self.tango.setTarget(SHOULDER,self.shoulder)
+            #self.tango.setTarget(SHOULDER,self.shoulder)
    
 #    def elbow(self, key):
 #        print(key.keycode)
